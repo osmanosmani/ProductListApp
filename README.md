@@ -40,6 +40,17 @@ Users can:
 
 ---
 
+## Example Usage
+
+The user can:
+- Add multiple products
+- Stop input with "Q"
+- View sorted product list
+- See total price
+- Search and highlight a product
+
+---
+
 ## Technologies Used
 
 - C#
@@ -50,19 +61,20 @@ Users can:
 
 ## Project Structure
 
-- `Program.cs` – Main application logic
-- `Product.cs` – Product class
-- `Category.cs` – Category class
+- `Program.cs` – Main application logic  
+- `Product.cs` – Product class  
+- `Category.cs` – Category class  
 
 ---
 
 ## How to Run
 
-1. Open the project in Visual Studio
-2. Run the application
-3. Follow the instructions in the console
+1. Open the project in Visual Studio  
+2. Run the application  
+3. Follow the instructions in the console  
 
 ---
 
 ## Author
-Osman
+
+Osman Osmani
