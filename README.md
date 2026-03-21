@@ -1,13 +1,30 @@
-# Product List Console App
+# 🛒 Product List Console App
 
-## Overview
-This project was built as part of a C# learning program and demonstrates practical use of object-oriented programming, LINQ, and console-based UI design.
+A simple and practical C# Console Application for managing a list of products using object-oriented programming and LINQ.
 
-It is a C# Console Application that allows users to manage a list of products by adding, viewing, sorting, and searching products in a structured way.
+---
 
-## Features
+## 📸 Preview
 
-### Add Products
+![App Screenshot](screenshot.PNG)
+
+---
+
+## 🚀 Overview
+
+This project was built as part of a C# learning program and demonstrates:
+
+- Object-Oriented Programming (OOP)
+- LINQ for data manipulation
+- Structured console-based UI design
+
+The application allows users to manage products in a clean and interactive way.
+
+---
+
+## ✨ Features
+
+### ➕ Add Products
 Users can enter:
 - Category
 - Product Name
@@ -15,48 +32,83 @@ Users can enter:
 
 Input continues until the user enters **"Q"**.
 
-### Product List
-- Products are displayed in a clean table format  
+---
+
+### 📋 Product List
+- Displayed in a clean table format  
 - Sorted from lowest to highest price using LINQ  
-- Total price is shown at the bottom  
+- Total price calculated and shown  
 
-### Search Function (Extra)
-- Users can search for a product by name  
-- Matching products are highlighted in the list  
+---
 
-### Error Handling
-- Invalid price inputs are handled using `TryParse`  
-- Prevents crashes and ensures valid input  
+### 🔍 Search Function
+- Search products by name  
+- Matching results are highlighted  
 
-### LINQ Usage
-- Sorting: `OrderBy()`
-- Summing: `Sum()`
-- Searching: `Where()`
+---
 
-## Project Status
-- Completed core requirements (Level 1–3)  
-- Extended with additional features (Level 4: search & highlight)  
-- Built with clean structure and LINQ usage  
+### ⚠️ Error Handling
+- Safe input handling using `TryParse`  
+- Prevents crashes from invalid input  
 
-## Example Output
-Below is an example of how the application looks when displaying products in the console.
+---
 
-*(Add your screenshot here if needed)*
+### ⚙️ LINQ Usage
+- Sorting → `OrderBy()`  
+- Summing → `Sum()`  
+- Filtering → `Where()`  
 
-## Technologies Used
+---
+
+## 📦 Project Structure
+
+```
+ProductListApp/
+│
+├── Program.cs      // Main application logic
+├── Product.cs      // Product model
+├── Category.cs     // Category model
+├── README.md
+└── screenshot.PNG
+```
+
+## 🧪 Example Usage
+
+The user can:
+
+- Add multiple products  
+- Stop input with **"Q"**  
+- View sorted product list  
+- See total price  
+- Search and highlight products  
+
+---
+
+## 🛠️ Technologies Used
+
 - C#
 - .NET Console Application
 - LINQ
 
-## Project Structure
-- `Program.cs` – Main application logic  
-- `Product.cs` – Product class  
-- `Category.cs` – Category class  
+---
 
-## How to Run
+## ▶️ How to Run
+
 1. Open the project in Visual Studio  
-2. Build and run the application  
-3. Follow the instructions in the console  
+2. Build the solution  
+3. Run the application  
+4. Follow the instructions in the console  
 
-## Author
-Osman Osmani
+---
+
+## 📌 Project Status
+
+✔ Completed core requirements  
+✔ Extended with search & highlight  
+✔ Clean structure and readable code  
+
+---
+
+## 👤 Author
+
+**Osman Osmani**
