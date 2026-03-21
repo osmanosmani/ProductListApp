@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using System.Linq;
 
-// List to store all added products
+// Stores all added products
 List<Product> products = new List<Product>();
 
-// Start by asking the user to add products
 AddProducts();
 
-// Keep the program running until the user chooses to quit
 while (true)
 {
     DisplayProducts();
@@ -17,99 +15,127 @@ while (true)
 
 void AddProducts()
 {
+    Console.Clear();
+
     while (true)
     {
-        Console.Clear();
-        Console.WriteLine("To enter a new product - follow the steps | To quit - enter: \"Q\"");
+        ShowAddHeader();
+
         Console.Write("Enter a Category: ");
-        string categoryInput = Console.ReadLine() ?? "";
+        string categoryInput = (Console.ReadLine() ?? "").Trim();
 
         // Stop adding products when the user enters Q
-        if (categoryInput.Trim().ToLower() == "q")
+        if (categoryInput.Equals("q", StringComparison.OrdinalIgnoreCase))
         {
             break;
         }
 
-        Console.Write("Enter a Product Name: ");
-        string productName = Console.ReadLine() ?? "";
-
-        Console.Write("Enter a Price: ");
-        string priceInput = Console.ReadLine() ?? "";
-
-        // Validate price input
-        if (!decimal.TryParse(priceInput, out decimal price))
+        if (string.IsNullOrWhiteSpace(categoryInput))
         {
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Invalid price. Please enter a valid number.");
-            Console.ResetColor();
-            Pause();
+            ShowError("Category cannot be empty.");
             continue;
         }
 
-        // Create category and product objects
+        Console.Write("Enter a Product Name: ");
+        string productName = (Console.ReadLine() ?? "").Trim();
+
+        if (string.IsNullOrWhiteSpace(productName))
+        {
+            ShowError("Product name cannot be empty.");
+            continue;
+        }
+
+        Console.Write("Enter a Price: ");
+        string priceInput = (Console.ReadLine() ?? "").Trim();
+
+        // Validates that price is a number and not negative
+        if (!decimal.TryParse(priceInput, out decimal price) || price < 0)
+        {
+            ShowError("Invalid price. Please enter a valid positive number.");
+            continue;
+        }
+
         Category category = new Category(categoryInput);
         Product product = new Product(productName, price, category);
 
-        // Add the product to the list
         products.Add(product);
 
         Console.ForegroundColor = ConsoleColor.Green;
         Console.WriteLine("The product was successfully added!");
         Console.ResetColor();
-        Pause();
+
+        PrintLine();
     }
 }
 
-void DisplayProducts(string? highlightProductName = null)
+void DisplayProducts(List<Product>? highlightedProducts = null)
 {
     Console.Clear();
 
     if (products.Count == 0)
     {
-        Console.WriteLine("No products have been added yet.");
+        ShowError("No products have been added yet.");
         return;
     }
 
-    // Sort products by price from low to high using LINQ
+    // Sort products from lowest price to highest and calculate total
     var sortedProducts = products.OrderBy(p => p.Price).ToList();
-
-    // Calculate total price using LINQ
     decimal totalAmount = sortedProducts.Sum(p => p.Price);
 
-    Console.WriteLine("Category\tProduct\t\tPrice");
-    Console.WriteLine("--------------------------------------------------");
+    PrintTableHeader();
+    PrintLine();
 
     foreach (var product in sortedProducts)
     {
-        bool isHighlighted = !string.IsNullOrWhiteSpace(highlightProductName) &&
-                             product.Name.Equals(highlightProductName, StringComparison.OrdinalIgnoreCase);
+        bool isHighlighted = highlightedProducts != null &&
+                             highlightedProducts.Any(p =>
+                                 p.Name.Equals(product.Name, StringComparison.OrdinalIgnoreCase) &&
+                                 p.Category.Name.Equals(product.Category.Name, StringComparison.OrdinalIgnoreCase) &&
+                                 p.Price == product.Price);
 
-        if (isHighlighted)
-        {
-            Console.ForegroundColor = ConsoleColor.Magenta;
-        }
-
-        Console.WriteLine($"{product.Category.Name}\t\t{product.Name}\t\t{product.Price}");
-
-        if (isHighlighted)
-        {
-            Console.ResetColor();
-        }
+        PrintProductRow(product, isHighlighted);
     }
 
-    Console.WriteLine("--------------------------------------------------");
-    Console.WriteLine($"Total amount:\t\t\t{totalAmount}");
-    Console.WriteLine("--------------------------------------------------");
+    Console.WriteLine();
+    Console.ResetColor();
+    Console.WriteLine("{0,-25}{1,10}", "Total amount:", totalAmount);
+    PrintLine();
+}
+
+void PrintTableHeader()
+{
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.Write("Category".PadRight(15));
+    Console.Write("Product".PadRight(15));
+    Console.WriteLine("Price".PadLeft(10));
+    Console.ResetColor();
+}
+
+void PrintProductRow(Product product, bool isHighlighted)
+{
+    Console.ForegroundColor = ConsoleColor.Green;
+    Console.Write(product.Category.Name.PadRight(15));
+
+    // Highlight searched product name
+    Console.ForegroundColor = isHighlighted ? ConsoleColor.Magenta : ConsoleColor.Gray;
+    Console.Write(product.Name.PadRight(15));
+
+    Console.ForegroundColor = ConsoleColor.Blue;
+    Console.WriteLine(product.Price.ToString().PadLeft(10));
+
+    Console.ResetColor();
 }
 
 void ShowOptionsMenu()
 {
-    Console.WriteLine();
+    Console.ForegroundColor = ConsoleColor.Cyan;
     Console.WriteLine("To enter a new product - enter: \"P\" | To search for a product - enter: \"S\" | To quit - enter: \"Q\"");
-    Console.Write("Choose an option: ");
-    string option = Console.ReadLine() ?? "";
+    Console.ResetColor();
 
-    switch (option.Trim().ToLower())
+    Console.Write("Choose an option: ");
+    string option = (Console.ReadLine() ?? "").Trim().ToLower();
+
+    switch (option)
     {
         case "p":
             AddProducts();
@@ -124,9 +150,7 @@ void ShowOptionsMenu()
             break;
 
         default:
-            Console.ForegroundColor = ConsoleColor.Red;
-            Console.WriteLine("Invalid option.");
-            Console.ResetColor();
+            ShowError("Invalid option.");
             Pause();
             break;
     }
@@ -135,22 +159,48 @@ void ShowOptionsMenu()
 void SearchProduct()
 {
     Console.Write("Enter a Product Name: ");
-    string searchInput = Console.ReadLine() ?? "";
+    string searchInput = (Console.ReadLine() ?? "").Trim();
 
-    var foundProduct = products
-        .FirstOrDefault(p => p.Name.Equals(searchInput, StringComparison.OrdinalIgnoreCase));
-
-    if (foundProduct == null)
+    if (string.IsNullOrWhiteSpace(searchInput))
     {
-        Console.ForegroundColor = ConsoleColor.Red;
-        Console.WriteLine("Product not found.");
-        Console.ResetColor();
+        ShowError("Product name cannot be empty.");
         Pause();
         return;
     }
 
-    DisplayProducts(foundProduct.Name);
+    // Finds matching products ignoring uppercase/lowercase differences
+    var foundProducts = products
+        .Where(p => p.Name.Equals(searchInput, StringComparison.OrdinalIgnoreCase))
+        .ToList();
+
+    if (!foundProducts.Any())
+    {
+        ShowError("Product not found.");
+        Pause();
+        return;
+    }
+
+    DisplayProducts(foundProducts);
     Pause();
+}
+
+void ShowAddHeader()
+{
+    Console.ForegroundColor = ConsoleColor.Yellow;
+    Console.WriteLine("To enter a new product - follow the steps | To quit - enter: \"Q\"");
+    Console.ResetColor();
+}
+
+void ShowError(string message)
+{
+    Console.ForegroundColor = ConsoleColor.Red;
+    Console.WriteLine(message);
+    Console.ResetColor();
+}
+
+void PrintLine()
+{
+    Console.WriteLine("---------------------------------------------");
 }
 
 void Pause()
