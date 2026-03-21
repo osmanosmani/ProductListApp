@@ -6,7 +6,13 @@ A simple and practical C# Console Application for managing a list of products us
 
 ## 📸 Preview
 
-![App Screenshot](screenshot.PNG)
+<p align="center">
+  <img src="screenshot.PNG" alt="App Preview" width="750"/>
+</p>
+
+<p align="center">
+  <em>Console output showing product list, sorting, and search functionality</em>
+</p>
 
 ---
 
